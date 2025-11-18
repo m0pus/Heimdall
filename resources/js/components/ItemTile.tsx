@@ -16,7 +16,7 @@ interface ItemTileProps {
  * ItemTile Component - Modern, mobile-friendly application tile
  *
  * Features:
- * - Heimdall-inspired glass-morphism design
+ * - Glass-morphism design with modern aesthetics
  * - Responsive sizing (mobile to desktop)
  * - Animated hover states
  * - Enhanced app stats display
@@ -93,7 +93,7 @@ export default function ItemTile(props: ItemTileProps) {
             color: textColor(),
           }}
         >
-        {/* Decorative Circle (Heimdall style) */}
+        {/* Decorative Circle */}
         <div class="tile-circle" />
 
         {/* Content Container */}

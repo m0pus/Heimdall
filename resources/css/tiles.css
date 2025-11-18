@@ -1,6 +1,6 @@
 /**
  * Tile Styles - Modern, Mobile-Friendly Application Tiles
- * Inspired by Heimdall's glass-morphism design
+ * Glass-morphism design with modern aesthetics
  */
 
 /* Tile Container */
@@ -26,7 +26,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 
-  /* Heimdall glass-morphism effect */
+  /* Glass-morphism effect */
   background-image: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0),
@@ -107,7 +107,7 @@
   animation-delay: 0.2s;
 }
 
-/* Decorative Circle (Heimdall Style) */
+/* Decorative Circle */
 .tile-circle {
   position: absolute;
   width: 120px;
@@ -655,7 +655,7 @@
 }
 
 /* ========================================
-   Livestats (Enhanced Apps) - Heimdall Style
+   Livestats (Enhanced Apps)
    ======================================== */
 
 .tile-stats .livestats {

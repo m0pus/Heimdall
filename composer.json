@@ -1,9 +1,12 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
+    "name": "m0pus/himinbjorg",
+    "description": "Himinbjörg - A modern, drop-in replacement for Heimdall Application Dashboard",
     "keywords": [
-        "framework",
-        "laravel"
+        "dashboard",
+        "heimdall",
+        "himinbjorg",
+        "laravel",
+        "solidjs"
     ],
     "license": "MIT",
     "type": "project",

@@ -9,7 +9,7 @@
                     $max_upload = ini_get('upload_max_filesize');
                     $max_upload_bytes = parse_size($max_upload);
                 @endphp
-                <a class="settinglink" target="_blank" rel="nofollow noreferer" href="https://github.com/linuxserver/Heimdall?tab=readme-ov-file#new-background-image-not-being-set">({{ format_bytes($max_upload_bytes, false) }})</a>
+                <a class="settinglink" target="_blank" rel="nofollow noreferer" href="https://github.com/m0pus/Heimdall?tab=readme-ov-file#new-background-image-not-being-set">({{ format_bytes($max_upload_bytes, false) }})</a>
                 @endif
 
             </div>

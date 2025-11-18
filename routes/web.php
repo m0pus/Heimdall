@@ -34,7 +34,7 @@ Route::get('/userselect/{user}', [LoginController::class, 'setUser'])->name('use
 Route::get('/userselect', [UserController::class, 'selectUser'])->name('user.select');
 Route::get('/autologin/{uuid}', [LoginController::class, 'autologin'])->name('user.autologin');
 
-// Legacy routes (old Heimdall controllers - for API and forms)
+// Legacy routes (for API and forms)
 Route::get('/legacy', [ItemController::class,'dash'])->name('dash.legacy');
 Route::get('check_app_list', [ItemController::class,'checkAppList'])->name('applist');
 
@@ -93,7 +93,7 @@ Route::get('titlecolour', function (Request $request) {
 Route::resource('users', UserController::class);
 
 /**
- * Legacy Settings (old Heimdall UI).
+ * Legacy Settings (for backward compatibility).
  * Renamed to avoid conflicts with SPA routes
  */
 Route::name('settings.')->prefix('legacy/settings')->group(function () {

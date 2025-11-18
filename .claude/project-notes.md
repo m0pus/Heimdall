@@ -1,4 +1,4 @@
-# Heimdall Fork - Project Notes
+# Himinbjörg - Project Notes
 
 ## Analysis Completed
 
@@ -6,7 +6,7 @@ Date: 2025-10-14
 
 ### What We've Learned
 
-Heimdall is a mature, well-architected Laravel application with:
+The application is a mature, well-architected Laravel dashboard with:
 - **Strong foundation**: Clean MVC architecture, good separation of concerns
 - **Unique features**: Enhanced apps system with live stats is innovative
 - **Active ecosystem**: 100+ supported apps, LinuxServer.io partnership

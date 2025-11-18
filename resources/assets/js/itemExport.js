@@ -1,4 +1,4 @@
-const EXPORT_FILE_NAME = "HeimdallExport.json";
+const EXPORT_FILE_NAME = "HiminbjorgExport.json";
 const EXPORT_API_URL = "api/item";
 
 /**

@@ -1,4 +1,4 @@
-# Heimdall Architecture Documentation
+# Himinbjörg Architecture Documentation
 
 ## System Architecture
 

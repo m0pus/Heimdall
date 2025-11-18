@@ -1,9 +1,5 @@
 # Himinbjörg
 
-<p align="center">
-  <img src="https://i.imgur.com/iuV8w3y.png" alt="Himinbjörg Banner" width="800">
-</p>
-
 > **Himinbjörg** - *"Heaven's Castle"* in Old Norse - A modern, drop-in replacement for Heimdall Application Dashboard
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)

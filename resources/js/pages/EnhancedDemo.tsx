@@ -114,7 +114,7 @@ export default function EnhancedDemo() {
           <p class="text-sm uppercase tracking-wide text-gray-500">QA Playground</p>
           <h1 class="text-3xl font-bold text-gray-900">Enhanced App Visual Test</h1>
           <p class="text-gray-600 max-w-3xl">
-            Automatically renders an ItemTile preview for every enhanced application shipped with Heimdall so visual
+            Automatically renders an ItemTile preview for every enhanced application so visual
             tests can confirm status badges, metric layouts, and error states without relying on real infrastructure.
           </p>
 
