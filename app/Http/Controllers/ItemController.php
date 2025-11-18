@@ -436,6 +436,13 @@ class ItemController extends Controller
         $appid = $request->input('app');
         $itemId = $request->input('item_id');
 
+        if (config('app.debug')) {
+            Log::debug('[appload] Loading app details', [
+                'appid' => $appid,
+                'item_id' => $itemId,
+            ]);
+        }
+
         if ($appid === 'null') {
             return null;
         }
@@ -455,15 +462,30 @@ class ItemController extends Controller
         }
 
         if ((bool)$app->enhanced === true) {
+            if (config('app.debug')) {
+                Log::debug('[appload] Enhanced app detected', ['appid' => $appid]);
+            }
+
             $item = $itemId ? Item::find($itemId) : Item::where('appid', $appid)->first();
 
             if ($item) {
                 $output['custom'] = className($appdetails->name) . '.config';
                 $output['appvalue'] = $item->description;
+
+                if (config('app.debug')) {
+                    Log::debug('[appload] Found existing item with config', [
+                        'item_id' => $item->id,
+                        'has_config' => !empty($item->description),
+                    ]);
+                }
             } else {
                 // Ensure the app is installed if not found
                 $output['custom'] = className($appdetails->name) . '.config';
                 $output['appvalue'] = null;
+
+                if (config('app.debug')) {
+                    Log::debug('[appload] No existing item found for this app');
+                }
             }
         }
 
@@ -487,9 +509,44 @@ class ItemController extends Controller
     public function testConfig(Request $request)
     {
         $data = $request->input('data');
+
+        if (config('app.debug')) {
+            Log::debug('[testConfig] Testing enhanced app config', [
+                'appid' => $data['type'] ?? null,
+                'has_apikey' => !empty($data['apikey']),
+                'has_override_url' => !empty($data['override_url']),
+            ]);
+        }
+
         //$url = $data[array_search('url', array_column($data, 'name'))]['value'];
         $single = Application::single($data['type']);
         $app = $single->class;
+
+        // Check if the enhanced app class exists, if not try to download it
+        if (!class_exists($app)) {
+            Log::info('[testConfig] Enhanced app class not found, attempting to download: ' . $data['type']);
+
+            try {
+                // Try to download the app files
+                Application::getApp($data['type']);
+
+                // Check again if class exists after download
+                if (!class_exists($app)) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Enhanced app files could not be downloaded. Please check your internet connection and try again.',
+                    ], 400);
+                }
+
+                Log::info('[testConfig] Successfully downloaded enhanced app files for: ' . $data['type']);
+            } catch (\Exception $e) {
+                Log::error('[testConfig] Failed to download enhanced app: ' . $e->getMessage());
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to download enhanced app files: ' . $e->getMessage(),
+                ], 400);
+            }
+        }
 
         // If password is not resubmitted fill it from the database when in edit mode
         if (array_key_exists('password', $data) &&
@@ -503,9 +560,40 @@ class ItemController extends Controller
             }
         }
 
-        $app_details = new $app();
-        $app_details->config = (object)$data;
-        $app_details->test();
+        try {
+            $app_details = new $app();
+            $app_details->config = (object)$data;
+
+            // Capture the test output
+            ob_start();
+            $app_details->test();
+            $output = ob_get_clean();
+
+            if (config('app.debug')) {
+                Log::debug('[testConfig] API test succeeded', [
+                    'appid' => $data['type'],
+                    'output' => $output,
+                ]);
+            }
+
+            // Return JSON response
+            return response()->json([
+                'status' => 'success',
+                'message' => $output,
+            ]);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                Log::debug('[testConfig] API test failed', [
+                    'appid' => $data['type'],
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'API test failed: ' . $e->getMessage(),
+            ], 400);
+        }
     }
 
     /**

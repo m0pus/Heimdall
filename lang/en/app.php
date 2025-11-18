@@ -114,7 +114,14 @@ return array (
   'alert.success.user_restored' => 'User restored successfully',
   'dashboard.reorder' => 'Reorder and pin items',
   'dashboard.settings' => 'Settings',
+  'dashboard.refresh_enhanced' => 'Refresh Enhanced Apps',
   'role' => 'Authentication role',
   'unauthorized_for_form' => 'You are not authorized to view this form.',
   'disabled_feature' => 'This feature is disabled.',
+
+  // Enhanced Apps Settings
+  'settings.enhanced_poll_interval' => 'Enhanced Apps Poll Interval',
+  'settings.enhanced_background_polling' => 'Enable Background Polling for Enhanced Apps',
+  'alert.success.enhanced_refresh_triggered' => 'Enhanced apps refresh triggered successfully',
+  'alert.success.enhanced_refreshing' => 'Refreshing enhanced apps...',
 );

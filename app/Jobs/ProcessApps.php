@@ -37,24 +37,55 @@ class ProcessApps implements ShouldQueue, ShouldBeUnique
     public function handle(): void
     {
         Log::debug('Process Apps dispatched');
-        $localapps = Application::whereNull('class')->get();
-        $json = SupportedApps::getList()->getBody();
 
+        // Download and save the apps list JSON
+        $response = SupportedApps::getList();
+        $json = $response->getBody()->getContents(); // Convert stream to string
         Storage::disk('local')->put('supportedapps.json', $json);
 
-        foreach ($localapps as $app) {
-            $app->class = $app->class();
-            $app->save();
+        Log::info('[ProcessApps] supportedapps.json downloaded and saved');
+
+        // Parse the JSON and sync all apps to database
+        $appsData = json_decode($json);
+        if (isset($appsData->apps)) {
+            Log::info('[ProcessApps] Found ' . count($appsData->apps) . ' apps in JSON');
+
+            foreach ($appsData->apps as $appData) {
+                // Create or update the application in the database
+                $app = Application::firstOrNew(['appid' => $appData->appid]);
+                $app->name = $appData->name;
+                $app->sha = $appData->sha ?? null;
+                $app->icon = 'icons/' . $appData->icon;
+                $app->website = $appData->website ?? null;
+                $app->license = $appData->license ?? null;
+                $app->description = $appData->description ?? null;
+                $app->enhanced = $appData->enhanced ?? 0;
+                $app->tile_background = $appData->tile_background ?? 'light';
+
+                // Generate class name
+                $className = preg_replace('/[^\p{L}\p{N}]/u', '', $appData->name);
+                $app->class = \App\SupportedApps::class . '\\' . $className . '\\' . $className;
+
+                $app->save();
+            }
+
+            Log::info('[ProcessApps] Synced ' . count($appsData->apps) . ' apps to database');
         }
 
+        // Download files for items that are using enhanced apps but don't have the files yet
         $items = Item::whereNotNull('class')->get();
+        Log::info('[ProcessApps] Checking ' . $items->count() . ' items for missing app files');
+
         foreach ($items as $item) {
             if (! file_exists(app_path('SupportedApps/'.Item::nameFromClass($item->class)))) {
                 $app = Application::where('class', $item->class)->first();
                 if ($app) {
+                    Log::debug('[ProcessApps] Downloading files for app: ' . $app->name);
                     Application::getApp($app->appid);
                 }
             }
         }
+
+        Log::info('[ProcessApps] Complete');
     }
 }

@@ -24,7 +24,7 @@ class CheckAllowed
         $current_user = User::currentUser();
 
         // Non admin users can't access users management
-        if (str_is('users*', $route)) {
+        if ($route && str_is('users*', $route)) {
             if ($current_user->getId() !== 1) {
                 return redirect()->route('dash');
             }

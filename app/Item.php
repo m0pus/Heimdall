@@ -110,6 +110,7 @@ class Item extends Model
         'role',
     ];
 
+    protected $appends = ['config'];
 
 
     /**
@@ -328,6 +329,50 @@ class Item extends Model
     }
 
     /**
+     * Get the config attribute (accessor for JSON responses)
+     * This is used by the frontend when editing items
+     */
+    public function getConfigAttribute()
+    {
+        if (! isset($this->description) || empty($this->description)) {
+            if (config('app.debug')) {
+                \Log::debug('[Item::getConfigAttribute] No description found', ['item_id' => $this->id]);
+            }
+            return null;
+        }
+
+        $config = json_decode($this->description, true); // Return as array for JSON
+
+        if (!$config || !is_array($config)) {
+            if (config('app.debug')) {
+                \Log::debug('[Item::getConfigAttribute] Invalid config JSON', [
+                    'item_id' => $this->id,
+                    'description' => $this->description,
+                ]);
+            }
+            return null;
+        }
+
+        // Ensure we have the expected fields
+        $result = [
+            'enabled' => $config['enabled'] ?? true,
+            'override_url' => $config['override_url'] ?? null,
+            'apikey' => $config['apikey'] ?? null,
+        ];
+
+        if (config('app.debug')) {
+            \Log::debug('[Item::getConfigAttribute] Config loaded', [
+                'item_id' => $this->id,
+                'has_apikey' => !empty($result['apikey']),
+                'has_override_url' => !empty($result['override_url']),
+                'enabled' => $result['enabled'],
+            ]);
+        }
+
+        return $result;
+    }
+
+    /**
      * @return mixed|stdClass
      */
     public function getconfig()
@@ -393,5 +438,15 @@ class Item extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the config attribute (parsed from description JSON)
+     */
+    protected function config(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->description ? json_decode($this->description) : null,
+        );
     }
 }

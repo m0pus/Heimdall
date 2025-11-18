@@ -2,14 +2,45 @@
 /node_modules
 /public/hot
 /public/storage
+/public/build
 /storage/*.key
 /storage/debugbar
+/storage/logs
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/testing
+/storage/framework/views
 /.idea
+/.vscode
 /.vagrant
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+
+# Environment files
+.env
+.env.backup
+.env.bak
+.env.example.queue
+.env.*.php
+.env.local
+.env.*.local
+
+# PHP
+/vendor
+composer.phar
+.phpunit.result.cache
+auth.json
+
+# IDE helpers (auto-generated)
+.phpstorm.meta.php
+_ide_helper.php
+_ide_helper_models.php
+
+# Backup files
+*.backup
+*.bak
 
 ### macOS ###
 *.DS_Store
@@ -27,5 +58,3 @@ yarn-error.log
 .Trashes
 .VolumeIcon.icns
 storage/app/public/avatars/*
-.env
-.phpunit.result.cache

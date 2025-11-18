@@ -52,6 +52,12 @@ class Application extends Model
     protected $primaryKey = 'appid';
 
     /**
+     * Allow mass assignment for all fields (internal use only)
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
      * @return mixed
      */
     public function icon()

@@ -32,14 +32,16 @@ abstract class SupportedApps
                 'response' => 'No URL has been specified',
             ];
         }
-        $res = $this->execute($url, $attrs);
-        if ($res == null) {
+        try {
+            $res = $this->execute($url, $attrs);
+        } catch (\RuntimeException $exception) {
             return (object) [
                 'code' => null,
-                'status' => $this->error,
+                'status' => $exception->getMessage(),
                 'response' => 'Connection failed',
             ];
         }
+
         switch ($res->getStatusCode()) {
             case 200:
                 $status = 'Successfully communicated with the API';
@@ -100,9 +102,9 @@ abstract class SupportedApps
             Log::debug($e->getMessage());
             $this->error = (string) $e->getResponse()->getBody();
         }
-        $this->error = 'General error connecting with API';
 
-        return $res;
+        $this->error = $this->error ?: 'General error connecting with API';
+        throw new \RuntimeException($this->error);
     }
 
     /**
@@ -140,7 +142,11 @@ abstract class SupportedApps
 
         $html = view('SupportedApps::'.$name.'.livestats', $data)->with('data', $data)->render();
 
-        return json_encode(['status' => $status, 'html' => $html]);
+        return json_encode([
+            'status' => $status,
+            'html' => $html,
+            'data' => $data,
+        ]);
         //return
     }
 

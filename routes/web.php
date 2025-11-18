@@ -34,7 +34,8 @@ Route::get('/userselect/{user}', [LoginController::class, 'setUser'])->name('use
 Route::get('/userselect', [UserController::class, 'selectUser'])->name('user.select');
 Route::get('/autologin/{uuid}', [LoginController::class, 'autologin'])->name('user.autologin');
 
-Route::get('/', [ItemController::class,'dash'])->name('dash');
+// Legacy routes (old Heimdall controllers - for API and forms)
+Route::get('/legacy', [ItemController::class,'dash'])->name('dash.legacy');
 Route::get('check_app_list', [ItemController::class,'checkAppList'])->name('applist');
 
 Route::get('single/{appid}', function ($appid) {
@@ -47,7 +48,7 @@ Route::get('single/{appid}', function ($appid) {
 Route::resource('tags', TagController::class);
 
 Route::name('tags.')->prefix('tag')->group(function () {
-    Route::get('/{slug}', [TagController::class, 'show'])->name('show');
+    Route::get('/{slug}', [TagController::class, 'show'])->name('show.slug');
     Route::get('/add/{tag}/{item}', [TagController::class, 'add'])->name('add');
     Route::get('/restore/{id}', [TagController::class, 'restore'])->name('restore');
 });
@@ -91,9 +92,10 @@ Route::get('titlecolour', function (Request $request) {
 Route::resource('users', UserController::class);
 
 /**
- * Settings.
+ * Legacy Settings (old Heimdall UI).
+ * Renamed to avoid conflicts with SPA routes
  */
-Route::name('settings.')->prefix('settings')->group(function () {
+Route::name('settings.')->prefix('legacy/settings')->group(function () {
     Route::get('/', [SettingsController::class,'index'])->name('index');
     Route::get('edit/{id}', [SettingsController::class,'edit'])->name('edit');
     Route::get('clear/{id}', [SettingsController::class,'clear'])->name('clear');
@@ -108,3 +110,11 @@ Route::resource('api/item', ItemRestController::class);
 Route::get('import', ImportController::class)->name('items.import');
 
 Route::get('/health', HealthController::class)->name('health');
+
+/**
+ * SPA Catch-all route (must be LAST!)
+ * All frontend routes (/, /settings, etc.) are handled by SolidJS router
+ */
+Route::get('/{any?}', function () {
+    return view('react');
+})->where('any', '.*')->name('dash');
